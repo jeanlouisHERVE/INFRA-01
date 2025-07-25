@@ -41,17 +41,51 @@ resource "aws_security_group" "server" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  ingress {
-    from_port       = 8080  # Specify the ports your applications/services use
-    to_port         = 8080
-    protocol        = "tcp"
-    security_groups = [aws_security_group.haproxy.id] 
-  }
-
   egress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "prometheus" {
+  name        = "prometheus-security-group"
+  description = "security group for prometheus server"
+
+  #prometheus
+  ingress {
+    from_port   = 9090
+    to_port     = 9090
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  #alertmanager
+  ingress {
+    from_port   = 9093
+    to_port     = 9093
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "grafana" {
+  name        = "grafana-security-group"
+  description = "security group for grafana server"
+
+  ingress {
+    from_port   = 3000
+    to_port     = 3000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+output "security_group_ids" {
+  value = {
+    server              = aws_security_group.server.id,
+    prometheus          = aws_security_group.prometheus.id,
+    grafana             = aws_security_group.grafana.id,
   }
 }
