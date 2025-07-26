@@ -21,6 +21,12 @@ variable "prometheus_instance_profile" {
   type        = string
 }
 
+variable "public_ssh_key" {
+  description = "Private SSH key content for connection"
+  type        = string
+  sensitive   = true
+}
+
 variable "private_ssh_key" {
   description = "Private SSH key content for connection"
   type        = string
