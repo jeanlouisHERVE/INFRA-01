@@ -1,3 +1,8 @@
+module "key_pair" {
+  source         = "./modules/key_pair"
+  public_ssh_key = var.public_ssh_key
+}
+
 resource "aws_instance" "grafana" {
   ami                    = "ami-07d9b9ddc6cd8dd30"
   instance_type          = "t2.micro"
