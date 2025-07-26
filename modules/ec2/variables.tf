@@ -20,3 +20,8 @@ variable "prometheus_instance_profile" {
   description = "Instance profile ARN or name for Prometheus EC2"
   type        = string
 }
+
+variable "public_ssh_key" {
+  description = "Public SSH key to use in aws_key_pair"
+  type        = string
+}
