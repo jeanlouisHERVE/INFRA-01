@@ -8,6 +8,11 @@ variable "public_ssh_key" {
   type        = string
 }
 
+variable "private_ssh_key" {
+  description = "The public SSH key to use"
+  type        = string
+}
+
 module "key_pair" {
   source         = "./modules/key_pair"
   public_ssh_key = var.public_ssh_key
@@ -30,6 +35,7 @@ module "policies" {
 module "ec2_instances" {
   source                      = "./modules/ec2"
   public_ssh_key              = var.public_ssh_key
+  private_ssh_key             = var.private_ssh_key
   security_id_server          = module.security_groups.security_group_ids["server"]
   security_id_prometheus      = module.security_groups.security_group_ids["prometheus"]
   security_id_grafana         = module.security_groups.security_group_ids["grafana"]
