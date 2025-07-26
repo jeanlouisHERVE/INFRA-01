@@ -1,3 +1,4 @@
 variable "PUBLIC_SSH_KEY" {
-  type = string
+  description = "The actual public SSH key value"
+  type        = string
 }
