@@ -29,6 +29,7 @@ module "policies" {
 
 module "ec2_instances" {
   source                      = "./modules/ec2"
+  public_ssh_key              = var.public_ssh_key
   security_id_server          = module.security_groups.security_group_ids["server"]
   security_id_prometheus      = module.security_groups.security_group_ids["prometheus"]
   security_id_grafana         = module.security_groups.security_group_ids["grafana"]
