@@ -21,7 +21,8 @@ variable "prometheus_instance_profile" {
   type        = string
 }
 
-variable "public_ssh_key" {
-  description = "Public SSH key to use in aws_key_pair"
+variable "private_ssh_key" {
+  description = "Private SSH key content for connection"
   type        = string
+  sensitive   = true
 }
