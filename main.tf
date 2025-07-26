@@ -3,8 +3,14 @@ provider "aws" {
   region = "us-east-1"
 }
 
+variable "public_ssh_key" {
+  description = "The public SSH key to use"
+  type        = string
+}
+
 module "key_pair" {
-  source = "./modules/key_pair"
+  source         = "./modules/key_pair"
+  public_ssh_key = var.public_ssh_key
 }
 
 module "security_groups" {
