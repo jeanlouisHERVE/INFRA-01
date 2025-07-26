@@ -9,7 +9,7 @@ jobs:
   terraform:
     runs-on: ubuntu-latest
     env:
-      TF_VAR_your_variable: ${{ secrets.YOUR_VARIABLE_SECRET }} # Example for a Terraform variable
+      TF_VAR_environment: ${{ secrets.YOUR_VARIABLE_SECRET }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
