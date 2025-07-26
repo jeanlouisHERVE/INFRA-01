@@ -1,8 +1,3 @@
-resource "aws_key_pair" "training" {
-  key_name   = "training"
-  public_key = var.public_ssh_key
-}
-
 resource "aws_instance" "grafana" {
   ami                    = "ami-07d9b9ddc6cd8dd30"
   instance_type          = "t2.micro"

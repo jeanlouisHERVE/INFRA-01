@@ -42,11 +42,3 @@ module "ec2_instances" {
   grafana_instance_profile    = module.roles.grafana_instance_profile
   prometheus_instance_profile = module.roles.prometheus_instance_profile
 }
-
-output "grafana_policy_arn" {
-  value = module.policies.policy_grafana_arn
-}
-
-output "grafana_instance_profile" {
-  value = module.roles.grafana_instance_profile
-}
