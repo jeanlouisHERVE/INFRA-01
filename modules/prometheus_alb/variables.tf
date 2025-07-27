@@ -33,5 +33,5 @@ variable "health_check_path" {
 variable "target_instance_ids" {
   description = "List of EC2 instance IDs to register"
   type        = list(string)
-  default     = [i-0ac6f6ca558de626d]
+  default     = []
 }
