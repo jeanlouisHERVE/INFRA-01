@@ -44,6 +44,12 @@ module "ec2_instances" {
 }
 
 
-module "shutdown_ec2_lambda" {
+module "lambdas" {
   source = "./modules/lambda/shutdown_ec2"
 }
+
+
+module "albs" {
+  source = "./modules/alb/prometheus_alb"
+}
+
