@@ -43,12 +43,12 @@ module "ec2_instances" {
   prometheus_instance_profile = module.roles.prometheus_instance_profile
 }
 
-terraform {
-  backend "s3" {
-    bucket         = "mon-bucket-terraform-state"
-    key            = "training/terraform.tfstate"
-    region         = "eu-west-3"
-    dynamodb_table = "terraform-lock"
-    encrypt        = true
-  }
-}
+# terraform {
+#   backend "s3" {
+#     bucket         = "mon-bucket-terraform-state"
+#     key            = "training/terraform.tfstate"
+#     region         = "eu-west-3"
+#     dynamodb_table = "terraform-lock"
+#     encrypt        = true
+#   }
+# }
