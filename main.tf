@@ -50,7 +50,7 @@ module "lambdas" {
 
 
 module "prometheus_alb" {
-  source = "./modules/promtheus_alb"
+  source = "./modules/prometheus_alb"
   name                = "prometheus-alb"
   vpc_id              = "vpc-06ef89843ae777ffa"
   subnets             = ["subnet-0ce71756846452ea9"]
