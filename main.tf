@@ -45,5 +45,5 @@ module "ec2_instances" {
 
 
 module "shutdown_ec2_lambda" {
-  source = "./module/lambda/shutdown_ec2"
+  source = "./modules/lambda/shutdown_ec2"
 }
