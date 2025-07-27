@@ -1,0 +1,2 @@
+connection server 
+ssh -i ~\\.ssh\\id_rsa ubuntu@34.229.138.216 
