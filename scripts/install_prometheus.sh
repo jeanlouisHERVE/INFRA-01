@@ -11,9 +11,11 @@ NC='\033[0m'
 
 PROMETHEUS_SERVICE_PATH="/etc/systemd/system/prometheus.service"
 PUSHGATEWAY_SERVICE_PATH="/etc/systemd/system/pushgateway.service"
+ALERTMANAGER_SERVICE_PATH="/etc/systemd/system/alertmanager.service"
 PROMETHEUS_YML_PATH="/etc/prometheus/prometheus.yml"
+ALERTMANAGER_YML_PATH="/opt/alertmanager/alertmanager.yml"
 ANSIBLE_SERVER_IP=""
-GRAFANA_SERVER_IP="13.221.127.190"
+GRAFANA_SERVER_IP="18.209.13.215"
 LB_SERVER_IP=""
 POSTGRES_SERVER_IP=""
 PGWATCH_SERVER_IP=""
@@ -205,7 +207,7 @@ else
 fi
 
 if [ ! -f "$PUSHGATEWAY_SERVICE_PATH" ]; then
-    echo -e "${YELLOW}INFO : Creating prometheus.service unit file...${NC}"
+    echo -e "${YELLOW}INFO : Creating pushgateway.service unit file...${NC}"
     sudo tee $PUSHGATEWAY_SERVICE_PATH > /dev/null <<EOF
 [Unit]
 Description=Pushgateway
@@ -224,16 +226,8 @@ ExecStart=/opt/pushgateway/pushgateway \
 WantedBy=multi-user.target
 EOF
 else
-    echo -e "${GREEN}OK : prometheus.service already exists.${NC}"
+    echo -e "${GREEN}OK : pushgateway.service already exists.${NC}"
 fi
-
-# Reload systemd daemon and start Prometheus service
-sudo systemctl daemon-reload
-timer 10
-sudo systemctl enable prometheus
-sudo systemctl enable pushgateway
-sudo systemctl restart prometheus
-sudo systemctl restart pushgateway
 
 if isservicesactive prometheus; then
     echo -e "${GREEN}OK : Prometheus is active.${NC}"
@@ -251,6 +245,73 @@ fi
 
 echo -e "${GREEN}Prometheus installation and configuration completed.${NC}"
 
+
+if [ -e "$ALERTMANAGER_YML_PATH" ]; then
+    echo -e "${RED} : File $ALERTMANAGER_YML_PATH already exists. Exiting.${NC}"
+else 
+    touch $ALERTMANAGER_YML_PATH
+fi
+
+cat <<EOF | sudo tee $ALERTMANAGER_YML_PATH > /dev/null
+route:
+  group_by: ['alertname']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 1h
+  receiver: 'web.hook'
+receivers:
+  - name: 'web.hook'
+    webhook_configs:
+      - url: 'http://127.0.0.1:5001/'
+inhibit_rules:
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['alertname', 'dev', 'instance']
+EOF
+
+cd /opt
+wget https://github.com/prometheus/alertmanager/releases/download/v0.28.1/alertmanager-0.28.1.linux-amd64.tar.gz
+tar -xzf alertmanager-0.28.1.linux-amd64.tar.gz
+ln -s alertmanager-0.28.1.linux-amd64 alertmanager
+
+if [ ! -f "$PUSHGATEWAY_SERVICE_PATH" ]; then
+    echo -e "${YELLOW}INFO : Creating alertmanager.service unit file...${NC}"
+    sudo tee $PUSHGATEWAY_SERVICE_PATH > /dev/null <<EOF
+[Unit]
+Description=Prometheus Alertmanager
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=alertmanager
+Group=alertmanager
+Type=simple
+ExecStart=/opt/alertmanager/alertmanager \
+  --config.file=/etc/alertmanager/alertmanager.yml \
+  --storage.path=/var/lib/alertmanager
+
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+EOF
+else
+    echo -e "${GREEN}OK : alertmanager.service already exists.${NC}"
+fi
+
+
+# Reload systemd daemon and start Prometheus service
+sudo systemctl daemon-reload
+timer 10
+sudo systemctl enable prometheus
+sudo systemctl enable pushgateway
+sudo systemctl enable alertmanager
+sudo systemctl restart prometheus
+sudo systemctl restart pushgateway
+sudo systemctl restart alertmanager
 #alertmanager 
 # curl -LO https://github.com/prometheus/alertmanager/releases/download/v$ALERTMANAGER_VERSION-rc.0/alertmanager-$ALERTMANAGER_VERSION-rc.0.linux-amd64.tar.gz
 # tar -xzf alertmanager-$ALERTMANAGER_VERSION-rc.0.linux-amd64.tar.gz

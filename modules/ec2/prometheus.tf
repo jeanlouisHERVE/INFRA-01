@@ -20,7 +20,7 @@ resource "aws_instance" "prometheus" {
     connection {
         type        = "ssh"
         user        = "ubuntu"
-        private_key = var.private_ssh_key
+        private_key = file("C:\\Users\\jeanl\\.ssh\\id_rsa")
         host        = self.public_ip
     }
   } 
