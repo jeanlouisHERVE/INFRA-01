@@ -67,4 +67,3 @@ override.tf.json
 terraform.rc
 
 credentials.txt
-modules/ansible/inventory/training_inventory.aws_ec2.yml
