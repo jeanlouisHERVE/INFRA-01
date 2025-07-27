@@ -69,7 +69,7 @@ resource "aws_lambda_function" "shutdown_ec2_lambda" {
 # CloudWatch rule for nightly execution
 resource "aws_cloudwatch_event_rule" "shutdown_ec2_schedule" {
   name                = "shutdown_ec2_nightly"
-  schedule_expression = "cron(45 18 * * ? *)" # Every night at 1 AM UTC
+  schedule_expression = "cron(0 17 * * ? *)" # Every night at 1 AM UTC
 }
 
 # Attach Lambda to CloudWatch rule
