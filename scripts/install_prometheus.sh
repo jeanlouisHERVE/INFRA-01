@@ -10,9 +10,10 @@ YELLOW='\033[0;33m'
 NC='\033[0m'
 
 PROMETHEUS_SERVICE_PATH="/etc/systemd/system/prometheus.service"
+PUSHGATEWAY_SERVICE_PATH="/etc/systemd/system/pushgateway.service"
 PROMETHEUS_YML_PATH="/etc/prometheus/prometheus.yml"
 ANSIBLE_SERVER_IP=""
-GRAFANA_SERVER_IP="34.235.114.80"
+GRAFANA_SERVER_IP="13.221.127.190"
 LB_SERVER_IP=""
 POSTGRES_SERVER_IP=""
 PGWATCH_SERVER_IP=""
@@ -54,16 +55,20 @@ timer() {
   echo -e "${GREEN}OK : Timer finished.${NC}"
 }
 
-ANSIBLE_SERVER_SHORTNAME=$(extract_shortname $ANSIBLE_SERVER_IP)
 GRAFANA_SERVER_SHORTNAME=$(extract_shortname $GRAFANA_SERVER_IP)
-LB_SERVER_SHORTNAME=$(extract_shortname $LB_SERVER_IP)
-POSTGRES_SERVER_SHORTNAME=$(extract_shortname $POSTGRES_SERVER_IP)
-PGWATCH_SERVER_SHORTNAME=$(extract_shortname $PGWATCH_SERVER_IP)
 
 # Update package lists
 sudo apt update
 sudo apt install -y awscli
 sudo apt install -y prometheus
+
+cd /opt
+wget https://github.com/prometheus/pushgateway/releases/download/v1.7.0/pushgateway-1.7.0.linux-amd64.tar.gz
+tar -xzf pushgateway-1.7.0.linux-amd64.tar.gz
+ln -s pushgateway-1.7.0.linux-amd64 pushgateway
+useradd --no-create-home --shell /usr/sbin/nologin pushgateway
+mkdir -p /var/lib/pushgateway
+chown pushgateway:pushgateway /var/lib/pushgateway
 
 if [ -e "$PROMETHEUS_YML_PATH" ]; then
     echo -e "${RED} : File $PROMETHEUS_YML_PATH already exists. Exiting.${NC}"
@@ -136,102 +141,6 @@ if [ -n "$GRAFANA_SERVER_IP" ]; then
 EOF
 fi
 
-if [ -n "$GRAFANA_ALLOY_SERVER_IP" ]; then
-    cat <<EOF | sudo tee -a /etc/prometheus/prometheus.yml
-  - job_name: 'grafanaalloy'
-    static_configs:
-      - targets: ["$GRAFANA_ALLOY_SERVER_IP:9100"]
-    relabel_configs:
-      - source_labels: [__address__]
-        regex: '([^:]+):\d+'
-        target_label: instance
-        replacement: '\${1}'
-      - source_labels: [__address__]
-        regex: '^(\d+\.\d+)\.\d+\.\d+'
-        target_label: shortname
-        replacement: '\${1}'
-EOF
-fi
-
-if [ -n "$ANSIBLE_SERVER_IP" ]; then
-    cat <<EOF | sudo tee -a /etc/prometheus/prometheus.yml
-  - job_name: 'ansible'
-    static_configs:
-      - targets: ["$ANSIBLE_SERVER_IP:9100"]
-    relabel_configs:
-      - source_labels: [__address__]
-        regex: '([^:]+):\d+'
-        target_label: instance
-        replacement: '\${1}'
-      - source_labels: [instance]
-        regex: '^(\d+\.\d+)\.\d+\.\d+'
-        target_label: shortname
-        replacement: '\${1}'
-EOF
-fi
-
-if [ -n "$LB_SERVER_IP" ]; then
-    cat <<EOF | sudo tee -a /etc/prometheus/prometheus.yml
-  - job_name: 'loadbalancer'
-    static_configs:
-      - targets: ["$LB_SERVER_IP:9100"]
-    relabel_configs:
-      - source_labels: [__address__]
-        regex: '([^:]+):\d+'
-        target_label: instance
-        replacement: '\${1}'
-      - source_labels: [instance]
-        regex: '^(\d+\.\d+)\.\d+\.\d+'
-        target_label: shortname
-        replacement: '\${1}'
-EOF
-fi
-
-if [ -n "$POSTGRES_SERVER_IP" ]; then
-    cat <<EOF | sudo tee -a /etc/prometheus/prometheus.yml
-  - job_name: 'postgres'
-    static_configs:
-      - targets: ["$POSTGRES_SERVER_IP:9100"]
-    relabel_configs:
-      - source_labels: [__address__]
-        regex: '([^:]+):\d+'
-        target_label: instance
-        replacement: '\${1}'
-      - source_labels: [instance]
-        regex: '^(\d+\.\d+)\.\d+\.\d+'
-        target_label: shortname
-        replacement: '\${1}'
-  - job_name: 'postgres'
-    static_configs:
-      - targets: ["$POSTGRES_SERVER_IP:9100"]
-    relabel_configs:
-      - source_labels: [__address__]
-        regex: '([^:]+):\d+'
-        target_label: instance
-        replacement: '\${1}'
-      - source_labels: [instance]
-        regex: '^(\d+\.\d+)\.\d+\.\d+'
-        target_label: shortname
-        replacement: '\${1}'
-EOF
-fi
-
-if [ -n "$PGWATCH_SERVER_IP" ]; then
-    cat <<EOF | sudo tee -a /etc/prometheus/prometheus.yml
-  - job_name: 'pgwatch'
-    static_configs:
-      - targets: ["$PGWATCH_SERVER_IP:9100"]
-    relabel_configs:
-      - source_labels: [__address__]
-        regex: '([^:]+):\d+'
-        target_label: instance
-        replacement: '\${1}'
-      - source_labels: [__address__]
-        regex: '^(\d+\.\d+)\.\d+\.\d+'
-        target_label: shortname
-        replacement: '\${1}'
-EOF
-fi
 
 TARGETS=()
 for ip in "${SERVERS_IP[@]}"; do
@@ -295,15 +204,48 @@ else
     echo -e "${GREEN}OK : prometheus.service already exists.${NC}"
 fi
 
+if [ ! -f "$PUSHGATEWAY_SERVICE_PATH" ]; then
+    echo -e "${YELLOW}INFO : Creating prometheus.service unit file...${NC}"
+    sudo tee $PUSHGATEWAY_SERVICE_PATH > /dev/null <<EOF
+[Unit]
+Description=Pushgateway
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=pushgateway
+Group=pushgateway
+Type=simple
+ExecStart=/opt/pushgateway/pushgateway \
+  --web.listen-address=":9091" \
+  --persistence.file="/var/lib/pushgateway/data"
+
+[Install]
+WantedBy=multi-user.target
+EOF
+else
+    echo -e "${GREEN}OK : prometheus.service already exists.${NC}"
+fi
+
 # Reload systemd daemon and start Prometheus service
 sudo systemctl daemon-reload
 timer 10
+sudo systemctl enable prometheus
+sudo systemctl enable pushgateway
 sudo systemctl restart prometheus
+sudo systemctl restart pushgateway
 
 if isservicesactive prometheus; then
     echo -e "${GREEN}OK : Prometheus is active.${NC}"
 else
     echo -e "${RED}KO : Prometheus is not active.${NC}"
+    exit 1
+fi
+
+if isservicesactive pushgateway; then
+    echo -e "${GREEN}OK : Pushgateway is active.${NC}"
+else
+    echo -e "${RED}KO : Pushgateway is not active.${NC}"
     exit 1
 fi
 
