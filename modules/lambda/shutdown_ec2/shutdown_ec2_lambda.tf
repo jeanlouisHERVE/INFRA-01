@@ -66,24 +66,48 @@ resource "aws_lambda_function" "shutdown_ec2_lambda" {
   }
 }
 
+#################################21PMUTC#################################
 # CloudWatch rule for nightly execution
-resource "aws_cloudwatch_event_rule" "shutdown_ec2_schedule" {
+resource "aws_cloudwatch_event_rule" "shutdown_ec2_21UTC" {
   name                = "shutdown_ec2_nightly"
-  schedule_expression = "cron(0 17 * * ? *)" # Every night at 1 AM UTC
+  schedule_expression = "cron(0 21 * * ? *)" # Every night at 21 PM UTC
 }
 
 # Attach Lambda to CloudWatch rule
 resource "aws_cloudwatch_event_target" "shutdown_ec2_lambda_target" {
-  rule      = aws_cloudwatch_event_rule.shutdown_ec2_schedule.name
+  rule      = aws_cloudwatch_event_rule.shutdown_ec2_21UTC.name
   target_id = "ShutdownEC2Lambda"
   arn       = aws_lambda_function.shutdown_ec2_lambda.arn
 }
 
 # Grant CloudWatch Events permission to invoke Lambda
-resource "aws_lambda_permission" "allow_cloudwatch_invoke" {
+resource "aws_lambda_permission" "allow_cloudwatch_21UTC" {
   statement_id  = "AllowExecutionFromCloudWatch"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.shutdown_ec2_lambda.function_name
   principal     = "events.amazonaws.com"
-  source_arn    = aws_cloudwatch_event_rule.shutdown_ec2_schedule.arn
+  source_arn    = aws_cloudwatch_event_rule.shutdown_ec2_21UTC.arn
+}
+
+#################################06AMUTC#################################
+# CloudWatch rule for nightly execution
+resource "aws_cloudwatch_event_rule" "shutdown_ec2_6UTC" {
+  name                = "shutdown_ec2_nightly"
+  schedule_expression = "cron(0 6 * * ? *)" # Every night at 6 AM UTC
+}
+
+# Attach Lambda to CloudWatch rule
+resource "aws_cloudwatch_event_target" "shutdown_ec2_lambda_target" {
+  rule      = aws_cloudwatch_event_rule.shutdown_ec2_6UTC.name
+  target_id = "ShutdownEC2Lambda"
+  arn       = aws_lambda_function.shutdown_ec2_lambda.arn
+}
+
+# Grant CloudWatch Events permission to invoke Lambda
+resource "aws_lambda_permission" "allow_cloudwatch_6UTC" {
+  statement_id  = "AllowExecutionFromCloudWatch"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.shutdown_ec2_lambda.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.shutdown_ec2_6UTC.arn
 }
