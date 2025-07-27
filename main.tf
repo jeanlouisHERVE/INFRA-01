@@ -43,6 +43,10 @@ module "ec2_instances" {
   prometheus_instance_profile = module.roles.prometheus_instance_profile
 }
 
+
+module "shutdown_ec2_lambda" {
+  source = "./module/lambda/shutdown_ec2"
+}
 # terraform {
 #   backend "s3" {
 #     bucket         = "mon-bucket-terraform-state"
