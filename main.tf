@@ -49,7 +49,7 @@ module "lambdas" {
 }
 
 module "route53" {
-  source = "./modules/route53/domain_name"
+  source = "./modules/route53"
 }
 
 
