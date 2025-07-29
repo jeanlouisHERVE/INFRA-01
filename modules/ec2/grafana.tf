@@ -28,3 +28,10 @@ resource "aws_instance" "grafana" {
     }
   }
 }
+
+resource "aws_eip" "grafana_ip" {
+  instance = "i-01c50e7fc180a876c"
+  tags = {
+    Name = "dev-grafana-eip"
+  }
+}
