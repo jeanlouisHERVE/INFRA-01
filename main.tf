@@ -26,6 +26,7 @@ module "policies" {
 
 module "ec2_instances" {
   source                      = "./modules/ec2"
+  key_name                    = module.key_pair.key_name
   public_key_path             = var.public_key_path
   private_key_path            = var.private_key_path
   security_id_server          = module.security_groups.security_group_ids["server"]

@@ -28,3 +28,7 @@ variable "public_key_path" {
 variable "private_key_path" {
   type = string
 }
+
+variable "key_name" {
+  type = string
+}
