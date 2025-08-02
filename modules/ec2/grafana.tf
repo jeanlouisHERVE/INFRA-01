@@ -3,7 +3,7 @@ resource "aws_instance" "grafana" {
   ami                    = "ami-07d9b9ddc6cd8dd30"
   instance_type          = "t2.micro"
   iam_instance_profile   = var.grafana_instance_profile
-  key_name               = "training"
+  key_name = modules.aws_key_pair.this.key_name
 
 
   vpc_security_group_ids = [var.security_id_grafana, var.security_id_server]
@@ -23,7 +23,7 @@ resource "aws_instance" "grafana" {
     connection {
         type        = "ssh"
         user        = "ubuntu"
-        private_key = file("C:\\Users\\jeanl\\.ssh\\id_rsa")
+        private_key = file(var.private_key_path)
         host        = self.public_ip
     }
   }
