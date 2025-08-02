@@ -65,6 +65,7 @@ module "prometheus_alb" {
   security_groups     = ["sg-08bc5a66f905cd066", "sg-032a0ad9ae314e4eb"]
   target_instance_ids = ["i-0ac6f6ca558de626d"]
   health_check_path   = "/-/healthy"
+  target_port         = 9090 
   # cm_certificate_arn  = module.acm.certificate_arn
 }
 
@@ -75,4 +76,5 @@ module "grafana_alb" {
   subnets             = ["subnet-0ce71756846452ea9"]
   security_groups     = ["sg-08bc5a66f905cd066", "sg-032a0ad9ae314e4eb"]
   target_instance_ids = ["i-0ac6f6ca558de626d"]
+  target_port         = 3000
 }

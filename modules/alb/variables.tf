@@ -21,7 +21,6 @@ variable "security_groups" {
 variable "target_port" {
   description = "Port to forward traffic to (e.g., Prometheus 9090)"
   type        = number
-  default     = 9090
 }
 
 variable "health_check_path" {
