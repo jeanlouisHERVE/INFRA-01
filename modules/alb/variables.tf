@@ -35,3 +35,8 @@ variable "target_instance_ids" {
   type        = list(string)
   default     = []
 }
+
+# variable "acm_certificate_arn" {
+#   type        = string
+#   description = "ARN of the ACM certificate to use for HTTPS listener"
+# }
