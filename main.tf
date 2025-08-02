@@ -48,6 +48,11 @@ module "lambdas" {
   source = "./modules/lambda/shutdown_ec2"
 }
 
+module "vpc" {
+  source = "./modules/vpc/vpc"
+  availability_zone = ["us-est-1a", "us-est-1b"]
+}
+
 module "route53" {
   source = "./modules/route53"
 }
