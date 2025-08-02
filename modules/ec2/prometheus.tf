@@ -2,7 +2,7 @@ resource "aws_instance" "prometheus" {
   ami                  = "ami-07d9b9ddc6cd8dd30"
   instance_type        = "t2.micro"
   iam_instance_profile = var.prometheus_instance_profile 
-  key_name = modules.aws_key_pair.this.key_name
+  key_name             = modules.key_pair.aws_key_pair.this.key_name
 
   tags = {
     Name = "EC2_prometheus"
