@@ -35,7 +35,7 @@ resource "aws_lb_listener" "prometheus_alb" {
   }
 }
 
-resource "aws_lb_target_group_attachment" "attachments" {
+resource "aws_lb_target_group_attachment" "prometheus_attachments" {
   count             = length(var.target_instance_ids)
   target_group_arn  = aws_lb_target_group.prometheus_alb.arn
   target_id         = var.target_instance_ids[count.index]
