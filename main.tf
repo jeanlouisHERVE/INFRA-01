@@ -49,8 +49,8 @@ module "lambdas" {
 }
 
 module "vpc" {
-  source = "./modules/vpc/vpc"
-  availability_zone = ["us-est-1a", "us-est-1b"]
+  source             = "./modules/vpc"
+  availability_zones = ["us-est-1a", "us-est-1b"]
 }
 
 module "route53" {
@@ -70,7 +70,7 @@ module "prometheus_alb" {
   security_groups     = ["sg-08bc5a66f905cd066", "sg-032a0ad9ae314e4eb"]
   target_instance_ids = ["i-0ac6f6ca558de626d"]
   health_check_path   = "/-/healthy"
-  target_port         = 9090 
+  target_port         = 9090
   # cm_certificate_arn  = module.acm.certificate_arn
 }
 
