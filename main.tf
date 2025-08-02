@@ -66,7 +66,7 @@ module "prometheus_alb" {
   source              = "./modules/alb"
   name                = "prometheus-alb"
   vpc_id              = "vpc-06ef89843ae777ffa"
-  subnets             = aws_subnet.public[*].id
+  subnets             = module.vpc.public_subnet_ids
   security_groups     = ["sg-08bc5a66f905cd066", "sg-032a0ad9ae314e4eb"]
   target_instance_ids = ["i-0ac6f6ca558de626d"]
   health_check_path   = "/-/healthy"
