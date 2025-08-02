@@ -5,9 +5,9 @@ provider "aws" {
 
 
 module "key_pair" {
-  source         = "./modules/key_pair"
-  public_ssh_key = var.public_ssh_key
-  key_name       = var.key_name
+  source          = "./modules/key_pair"
+  key_name        = var.key_name
+  public_key_path = var.public_key_path
 }
 
 module "security_groups" {
