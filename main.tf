@@ -69,12 +69,12 @@ module "prometheus_alb" {
   # cm_certificate_arn  = module.acm.certificate_arn
 }
 
-module "grafana_alb" {
-  source              = "./modules/alb"
-  name                = "prometheus-alb"
-  vpc_id              = "vpc-06ef89843ae777ffa"
-  subnets             = ["subnet-0ce71756846452ea9"]
-  security_groups     = ["sg-08bc5a66f905cd066", "sg-032a0ad9ae314e4eb"]
-  target_instance_ids = ["i-0ac6f6ca558de626d"]
-  target_port         = 3000
-}
+# module "grafana_alb" {
+#   source              = "./modules/alb"
+#   name                = "prometheus-alb"
+#   vpc_id              = "vpc-06ef89843ae777ffa"
+#   subnets             = ["subnet-0ce71756846452ea9"]
+#   security_groups     = ["sg-08bc5a66f905cd066", "sg-032a0ad9ae314e4eb"]
+#   target_instance_ids = ["i-0ac6f6ca558de626d"]
+#   target_port         = 3000
+# }
