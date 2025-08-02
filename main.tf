@@ -58,7 +58,7 @@ module "route53" {
 # }
 
 module "prometheus_alb" {
-  source = "./modules/alb"
+  source              = "./modules/alb"
   name                = "prometheus-alb"
   vpc_id              = "vpc-06ef89843ae777ffa"
   subnets             = ["subnet-0ce71756846452ea9"]
@@ -69,7 +69,7 @@ module "prometheus_alb" {
 }
 
 module "grafana_alb" {
-  source = "./modules/alb"
+  source              = "./modules/alb"
   name                = "prometheus-alb"
   vpc_id              = "vpc-06ef89843ae777ffa"
   subnets             = ["subnet-0ce71756846452ea9"]
