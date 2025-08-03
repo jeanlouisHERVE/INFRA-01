@@ -71,6 +71,18 @@ data "aws_security_group" "server-sg" {
   vpc_id = module.vpc.vpc_id
 }
 
+data "aws_instances" "prometheus" {
+  filter {
+    name   = "tag:Name"
+    values = ["EC2_prometheus"]
+  }
+
+  filter {
+    name   = "instance-state-name"
+    values = ["running", "stopped"]
+  }
+}
+
 module "prometheus_alb" {
   source  = "./modules/alb"
   name    = "prometheus-alb"
@@ -80,7 +92,7 @@ module "prometheus_alb" {
     data.aws_security_group.prometheus_sg.id,
     data.aws_security_group.servers_sg.id
   ]
-  target_instance_ids = ["i-0ac6f6ca558de626d"]
+  target_instance_ids = [data.aws_instances.prometheus.ids[0]]
   health_check_path   = "/-/healthy"
   target_port         = 9090
   # cm_certificate_arn  = module.acm.certificate_arn
