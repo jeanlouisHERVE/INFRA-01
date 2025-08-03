@@ -62,7 +62,7 @@ data "aws_security_group" "prometheus_sg" {
   vpc_id = module.vpc.vpc_id
 }
 
-data "aws_security_group" "server-sg" {
+data "aws_security_group" "servers_sg" {
   filter {
     name   = "group-name"
     values = ["server-security-group"]
