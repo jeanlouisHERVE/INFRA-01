@@ -3,7 +3,6 @@ provider "aws" {
   region = "us-east-1"
 }
 
-
 module "key_pair" {
   source          = "./modules/key_pair"
   key_name        = var.key_name
@@ -54,12 +53,33 @@ module "route53" {
 #   route53_zone_id = var.route53_zone_id
 # }
 
+data "aws_security_group" "prometheus_sg" {
+  filter {
+    name   = "group-name"
+    values = ["prometheus-security-group"]
+  }
+
+  vpc_id = module.vpc.vpc_id
+}
+
+data "aws_security_group" "server-sg" {
+  filter {
+    name   = "group-name"
+    values = ["server-security-group"]
+  }
+
+  vpc_id = module.vpc.vpc_id
+}
+
 module "prometheus_alb" {
-  source              = "./modules/alb"
-  name                = "prometheus-alb"
-  vpc_id              = module.aws_vpc.custom.id
-  subnets             = module.vpc.public_subnet_ids
-  security_groups     = ["sg-08bc5a66f905cd066", "sg-032a0ad9ae314e4eb"]
+  source  = "./modules/alb"
+  name    = "prometheus-alb"
+  vpc_id  = module.vpc.vpc_id
+  subnets = module.vpc.public_subnet_ids
+  security_groups = [
+    data.aws_security_group.prometheus_sg.id,
+    data.aws_security_group.servers_sg.id
+  ]
   target_instance_ids = ["i-0ac6f6ca558de626d"]
   health_check_path   = "/-/healthy"
   target_port         = 9090

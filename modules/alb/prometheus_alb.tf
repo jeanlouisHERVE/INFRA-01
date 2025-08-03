@@ -5,6 +5,7 @@ resource "aws_lb" "prometheus_alb" {
   security_groups    = var.security_groups
   subnets            = var.subnets
   enable_deletion_protection = false
+  
 }
 
 resource "aws_lb_target_group" "prometheus_alb" {
@@ -13,6 +14,10 @@ resource "aws_lb_target_group" "prometheus_alb" {
   protocol    = "HTTP"
   vpc_id      = var.vpc_id
   target_type = "instance"
+  
+  lifecycle {
+    create_before_destroy = true
+  }
 
   health_check {
     path                = var.health_check_path

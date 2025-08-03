@@ -23,10 +23,6 @@ resource "aws_subnet" "public" {
   }
 }
 
-output "public_subnet_ids" {
-  value = aws_subnet.public[*].id
-}
-
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.custom.id
   tags = {
@@ -53,6 +49,3 @@ resource "aws_route_table_association" "public_assoc" {
   route_table_id = aws_route_table.public.id
 }
 
-output "vpc_id" {
-  value = aws_vpc.custom.id
-}
