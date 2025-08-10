@@ -29,21 +29,19 @@ resource "aws_lb_target_group" "prometheus_alb" {
 }
 
 resource "aws_lb_listener" "prometheus_alb" {
-  count = length(var.target_instance_ids) > 0 ? 1 : 0
-
-  load_balancer_arn = aws_lb.prometheus_alb[0].arn
+  load_balancer_arn = aws_lb.prometheus_alb.arn
   port              = 80
   protocol          = "HTTP"
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.prometheus_alb[0].arn
+    target_group_arn = aws_lb_target_group.prometheus_alb.arn
   }
 }
 
 resource "aws_lb_target_group_attachment" "prometheus_attachments" {
   count             = length(var.target_instance_ids)
-  target_group_arn  = aws_lb_target_group.prometheus_alb[0].arn
+  target_group_arn  = aws_lb_target_group.prometheus_alb.arn
   target_id         = var.target_instance_ids[count.index]
   port              = var.target_port
 }

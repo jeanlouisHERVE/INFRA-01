@@ -1,6 +1,7 @@
 resource "aws_security_group" "server" {
   name        = "server-security-group"
   description = "security group for server instances"
+  vpc_id      = var.vpc_id  
 
   ingress {
     from_port   = 22
@@ -52,6 +53,7 @@ resource "aws_security_group" "server" {
 resource "aws_security_group" "prometheus" {
   name        = "prometheus-security-group"
   description = "security group for prometheus server"
+  vpc_id      = var.vpc_id  
 
   #prometheus
   ingress {
@@ -73,6 +75,7 @@ resource "aws_security_group" "prometheus" {
 resource "aws_security_group" "grafana" {
   name        = "grafana-security-group"
   description = "security group for grafana server"
+  vpc_id      = var.vpc_id  
 
   ingress {
     from_port   = 3000

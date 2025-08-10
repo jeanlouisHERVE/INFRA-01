@@ -32,3 +32,8 @@ variable "private_key_path" {
 variable "key_name" {
   type = string
 }
+
+variable "subnet_id" {
+  description = "Subnet ID where the EC2 instance will be deployed"
+  type        = string
+}
