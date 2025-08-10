@@ -1,6 +1,4 @@
 resource "aws_lb" "prometheus_alb" {
-  count = length(var.target_instance_ids) > 0 ? 1 : 0
-
   name               = var.name
   internal           = false
   load_balancer_type = "application"
@@ -10,7 +8,6 @@ resource "aws_lb" "prometheus_alb" {
 }
 
 resource "aws_lb_target_group" "prometheus_alb" {
-  count       = length(var.target_instance_ids) > 0 ? 1 : 0
   name        = "${var.name}-tg"
   port        = var.target_port
   protocol    = "HTTP"
