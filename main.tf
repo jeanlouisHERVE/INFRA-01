@@ -53,24 +53,6 @@ module "route53" {
 #   route53_zone_id = var.route53_zone_id
 # }
 
-data "aws_security_group" "prometheus_sg" {
-  filter {
-    name   = "group-name"
-    values = ["prometheus-security-group"]
-  }
-
-  vpc_id = module.vpc.vpc_id
-}
-
-data "aws_security_group" "servers_sg" {
-  filter {
-    name   = "group-name"
-    values = ["server-security-group"]
-  }
-
-  vpc_id = module.vpc.vpc_id
-}
-
 data "aws_instances" "prometheus" {
   filter {
     name   = "tag:Name"
@@ -83,14 +65,26 @@ data "aws_instances" "prometheus" {
   }
 }
 
+data "aws_security_groups" "all_in_vpc" {
+  filter {
+    name   = "vpc-id"
+    values = [module.vpc.vpc_id]
+  }
+}
+
+output "all_sg_ids" {
+  value = data.aws_security_groups.all_in_vpc.ids
+}
+
 module "prometheus_alb" {
+  count   = length(data.aws_instances.prometheus.ids) > 0 ? 1 : 0
   source  = "./modules/alb"
   name    = "prometheus-alb"
   vpc_id  = module.vpc.vpc_id
   subnets = module.vpc.public_subnet_ids
   security_groups = [
-    data.aws_security_group.prometheus_sg.id,
-    data.aws_security_group.servers_sg.id
+    module.security_groups.security_group_ids["prometheus"],
+    module.security_groups.security_group_ids["server"]
   ]
   target_instance_ids = [data.aws_instances.prometheus.ids[0]]
   health_check_path   = "/-/healthy"
