@@ -109,7 +109,7 @@ module "prometheus_alb" {
     module.security_groups.security_group_ids["prometheus"],
     module.security_groups.security_group_ids["server"]
   ]
-  target_instance_ids = [data.aws_instances.prometheus.ids[0]]
+  target_instance_ids = [module.ec2_instances.prometheus_instance_id]
   health_check_path   = "/-/healthy"
   target_port         = 9090
 }
@@ -123,7 +123,7 @@ module "grafana_alb" {
     module.security_groups.security_group_ids["grafana"],
     module.security_groups.security_group_ids["server"]
   ]
-  target_instance_ids = [data.aws_instances.grafana.ids[0]]
+  target_instance_ids = [module.ec2_instances.grafana_instance_id]
   health_check_path   = "/-/healthy"
   target_port         = 3000
 }
