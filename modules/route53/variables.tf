@@ -3,12 +3,22 @@ variable "zone_id" {
   type        = string
 }
 
-variable "alb_dns_name" {
-  description = "DNS name of the ALB"
-  type        = string
+variable "prometheus_alb_dns_name" {
+  description = "DNS name of the ALB prometheus"
+  type = string
 }
 
-variable "alb_zone_id" {
-  description = "Zone ID of the ALB"
-  type        = string
+variable "prometheus_alb_zone_id" {
+  description = "Zone ID of the ALB prometheus"
+  type = string
+}
+
+variable "grafana_alb_dns_name" {
+  description = "DNS name of the ALB grafana"
+  type = string
+}
+
+variable "grafana_alb_zone_id" {
+  description = "Zone ID of the ALB grafana"
+  type = string
 }

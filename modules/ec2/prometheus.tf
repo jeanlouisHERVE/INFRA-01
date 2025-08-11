@@ -27,9 +27,9 @@ resource "aws_instance" "prometheus" {
   } 
 }
 
-resource "aws_eip" "prometheus_ip" {
-  instance = aws_instance.prometheus.id
-  tags = {
-    Name = "dev-prometheus-eip"
-  }
-}
+# resource "aws_eip" "prometheus_ip" {
+#   instance = aws_instance.prometheus.id
+#   tags = {
+#     Name = "dev-prometheus-eip"
+#   }
+# }
