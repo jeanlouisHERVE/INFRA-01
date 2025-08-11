@@ -34,6 +34,7 @@ module "ec2_instances" {
   security_id_grafana         = module.security_groups.security_group_ids["grafana"]
   grafana_instance_profile    = module.roles.grafana_instance_profile
   prometheus_instance_profile = module.roles.prometheus_instance_profile
+  subnet_id                   = module.vpc.public_subnet_ids[0]
 }
 
 module "lambdas" {
@@ -45,14 +46,18 @@ module "vpc" {
   availability_zones = ["us-east-1a", "us-east-1b"]
 }
 
-module "route53" {
-  source = "./modules/route53"
+data "aws_route53_zone" "main" {
+  name         = "secoureo.com"
+  private_zone = false
 }
 
-# module "acm" {
-#   source          = "./modules/acm"
-#   route53_zone_id = var.route53_zone_id
-# }
+module "route53" {
+  source       = "./modules/route53"
+  alb_zone_id  = module.prometheus_alb.prometheus_alb_zone_id
+  alb_dns_name = module.prometheus_alb.prometheus_alb_dns_name
+  zone_id      = data.aws_route53_zone.main.zone_id
+}
+
 
 data "aws_instances" "prometheus" {
   filter {
@@ -78,7 +83,6 @@ output "all_sg_ids" {
 }
 
 module "prometheus_alb" {
-  count   = length(data.aws_instances.prometheus.ids) > 0 ? 1 : 0
   source  = "./modules/alb"
   name    = "prometheus-alb"
   vpc_id  = module.vpc.vpc_id

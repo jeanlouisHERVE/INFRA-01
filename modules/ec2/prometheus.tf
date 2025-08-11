@@ -3,7 +3,7 @@ resource "aws_instance" "prometheus" {
   instance_type        = "t2.micro"
   iam_instance_profile = var.prometheus_instance_profile 
   key_name             = var.key_name
-  subnet_id            = module.vpc.public_subnet_ids[0] 
+  subnet_id            = var.subnet_id
 
   tags = {
     Name = "EC2_prometheus"
