@@ -52,10 +52,16 @@ data "aws_route53_zone" "main" {
 }
 
 module "route53" {
-  source       = "./modules/route53"
-  alb_zone_id  = module.prometheus_alb.prometheus_alb_zone_id
-  alb_dns_name = module.prometheus_alb.prometheus_alb_dns_name
-  zone_id      = data.aws_route53_zone.main.zone_id
+  source  = "./modules/route53"
+  zone_id = data.aws_route53_zone.main.zone_id
+  # Prometheus
+  prometheus_alb_zone_id = module.prometheus_alb.prometheus_alb_zone_id
+  prometheus_alb_dns_name = module.prometheus_alb.prometheus_alb_dns_name
+
+  # Grafana
+  grafana_alb_zone_id  = module.grafana_alb.grafana_alb_zone_id
+  grafana_alb_dns_name = module.grafana_alb.grafana_alb_dns_name
+
 }
 
 
