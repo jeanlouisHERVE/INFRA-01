@@ -77,6 +77,18 @@ data "aws_instances" "prometheus" {
   }
 }
 
+data "aws_instances" "grafana" {
+  filter {
+    name   = "tag:Name"
+    values = ["EC2_grafana"]
+  }
+
+  filter {
+    name   = "instance-state-name"
+    values = ["running", "stopped"]
+  }
+}
+
 data "aws_security_groups" "all_in_vpc" {
   filter {
     name   = "vpc-id"
