@@ -21,14 +21,19 @@ variable "prometheus_instance_profile" {
   type        = string
 }
 
-variable "public_ssh_key" {
-  description = "Private SSH key content for connection"
-  type        = string
-  sensitive   = true
+variable "public_key_path" {
+  type = string
 }
 
-variable "private_ssh_key" {
-  description = "Private SSH key content for connection"
+variable "private_key_path" {
+  type = string
+}
+
+variable "key_name" {
+  type = string
+}
+
+variable "subnet_id" {
+  description = "Subnet ID where the EC2 instance will be deployed"
   type        = string
-  sensitive   = true
 }

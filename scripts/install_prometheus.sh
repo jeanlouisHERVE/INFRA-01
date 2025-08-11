@@ -11,17 +11,19 @@ NC='\033[0m'
 
 PROMETHEUS_SERVICE_PATH="/etc/systemd/system/prometheus.service"
 PUSHGATEWAY_SERVICE_PATH="/etc/systemd/system/pushgateway.service"
+
 ALERTMANAGER_SERVICE_PATH="/etc/systemd/system/alertmanager.service"
 PROMETHEUS_YML_PATH="/etc/prometheus/prometheus.yml"
 ALERTMANAGER_YML_PATH="/opt/alertmanager/alertmanager.yml"
 ANSIBLE_SERVER_IP=""
-GRAFANA_SERVER_IP="18.209.13.215"
+GRAFANA_SERVER_IP=""
 LB_SERVER_IP=""
 POSTGRES_SERVER_IP=""
 PGWATCH_SERVER_IP=""
 SERVERS_IP=("" "" "")
 
-ALERTMANAGER_VERSION="0.28.0"
+ALERTMANAGER_VERSION="0.28.1"
+PUSHGATEWAY_VERSION="1.11.1"
 
 #functions 
 isservicesactive () {
@@ -65,9 +67,9 @@ sudo apt install -y awscli
 sudo apt install -y prometheus
 
 cd /opt
-wget https://github.com/prometheus/pushgateway/releases/download/v1.7.0/pushgateway-1.7.0.linux-amd64.tar.gz
-tar -xzf pushgateway-1.7.0.linux-amd64.tar.gz
-ln -s pushgateway-1.7.0.linux-amd64 pushgateway
+wget https://github.com/prometheus/pushgateway/releases/download/v$PUSHGATEWAY_VERSION/pushgateway-$PUSHGATEWAY_VERSION.linux-amd64.tar.gz
+tar -xzf pushgateway-$PUSHGATEWAY_VERSION.linux-amd64.tar.gz
+ln -s pushgateway-$PUSHGATEWAY_VERSION.linux-amd64 pushgateway
 useradd --no-create-home --shell /usr/sbin/nologin pushgateway
 mkdir -p /var/lib/pushgateway
 chown pushgateway:pushgateway /var/lib/pushgateway
@@ -272,9 +274,9 @@ inhibit_rules:
 EOF
 
 cd /opt
-wget https://github.com/prometheus/alertmanager/releases/download/v0.28.1/alertmanager-0.28.1.linux-amd64.tar.gz
-tar -xzf alertmanager-0.28.1.linux-amd64.tar.gz
-ln -s alertmanager-0.28.1.linux-amd64 alertmanager
+wget https://github.com/prometheus/alertmanager/releases/download/v$ALERTMANAGER_VERSION/alertmanager-$ALERTMANAGER_VERSION.linux-amd64.tar.gz
+tar -xzf alertmanager-$ALERTMANAGER_VERSION.linux-amd64.tar.gz
+ln -s alertmanager-$ALERTMANAGER_VERSION.linux-amd64 alertmanager
 
 if [ ! -f "$PUSHGATEWAY_SERVICE_PATH" ]; then
     echo -e "${YELLOW}INFO : Creating alertmanager.service unit file...${NC}"

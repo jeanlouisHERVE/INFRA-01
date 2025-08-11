@@ -2,7 +2,8 @@ resource "aws_instance" "prometheus" {
   ami                  = "ami-07d9b9ddc6cd8dd30"
   instance_type        = "t2.micro"
   iam_instance_profile = var.prometheus_instance_profile 
-  key_name             = "training"
+  key_name             = var.key_name
+  subnet_id            = var.subnet_id
 
   tags = {
     Name = "EC2_prometheus"
@@ -20,14 +21,14 @@ resource "aws_instance" "prometheus" {
     connection {
         type        = "ssh"
         user        = "ubuntu"
-        private_key = file("C:\\Users\\jeanl\\.ssh\\id_rsa")
+        private_key = file(var.private_key_path)
         host        = self.public_ip
     }
   } 
 }
 
 resource "aws_eip" "prometheus_ip" {
-  instance = "i-0ac6f6ca558de626d"
+  instance = aws_instance.prometheus.id
   tags = {
     Name = "dev-prometheus-eip"
   }
