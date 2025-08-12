@@ -283,6 +283,10 @@ cd /opt
 wget https://github.com/prometheus/alertmanager/releases/download/v$ALERTMANAGER_VERSION/alertmanager-$ALERTMANAGER_VERSION.linux-amd64.tar.gz
 tar -xzf alertmanager-$ALERTMANAGER_VERSION.linux-amd64.tar.gz
 ln -s alertmanager-$ALERTMANAGER_VERSION.linux-amd64 alertmanager
+sudo mkdir -p /var/lib/alertmanager
+sudo chmod 755 /var/lib/alertmanager
+sudo useradd --system --no-create-home --shell /bin/false alertmanager
+sudo chown -R alertmanager:alertmanager /var/lib/alertmanager
 
 if [ ! -f "$ALERTMANAGER_SERVICE_PATH" ]; then
     echo -e "${YELLOW}INFO : Creating alertmanager.service unit file...${NC}"
@@ -297,7 +301,7 @@ User=alertmanager
 Group=alertmanager
 Type=simple
 ExecStart=/opt/alertmanager/alertmanager \
-  --config.file=/etc/alertmanager/alertmanager.yml \
+  --config.file=/opt/alertmanager/alertmanager.yml \
   --storage.path=/var/lib/alertmanager
 
 Restart=always
