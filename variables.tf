@@ -1,11 +1,15 @@
 variable "key_name" {
-  type = string
+  default = "sartrouville-laptop"
+  type    = string
 }
 
 variable "public_key_path" {
-  type = string
+  default = "~/.ssh/id_rsa.pub"
+  type    = string
 }
 
 variable "private_key_path" {
-  type = string
+  default = "~/.ssh/id_rsa"
+  type    = string
 }
+

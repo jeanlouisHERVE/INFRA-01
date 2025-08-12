@@ -26,12 +26,31 @@ ALERTMANAGER_VERSION="0.28.1"
 PUSHGATEWAY_VERSION="1.11.1"
 
 #functions 
-isservicesactive () {
-    if systemctl is-active --quiet $1; then
-        echo -e "${GREEN}$1 is running.${NC}"
+check_and_restart_service() {
+    local service_name="$1"
+    local max_attempts=5
+    local attempt=1
+
+    while [ $attempt -le $max_attempts ]; do
+        if systemctl is-active --quiet "$service_name"; then
+            echo -e "${GREEN}OK : $service_name is active.${NC}"
+            return 0
+        else
+            echo -e "${RED}KO : $service_name is not active (Attempt $attempt/$max_attempts).${NC}"
+            echo "Restarting $service_name..."
+            systemctl restart "$service_name"
+        fi
+
+        sleep 2 # Give it some time to start
+        ((attempt++))
+    done
+
+    # Final check
+    if systemctl is-active --quiet "$service_name"; then
+        echo -e "${GREEN}OK : $service_name is active after $((attempt-1)) attempt(s).${NC}"
         return 0
     else
-        echo -e "${RED}$1 is not running.${NC}"
+        echo -e "${RED}ERROR : $service_name failed to start after $max_attempts attempts.${NC}"
         return 1
     fi
 }
@@ -231,19 +250,6 @@ else
     echo -e "${GREEN}OK : pushgateway.service already exists.${NC}"
 fi
 
-if isservicesactive prometheus; then
-    echo -e "${GREEN}OK : Prometheus is active.${NC}"
-else
-    echo -e "${RED}KO : Prometheus is not active.${NC}"
-    exit 1
-fi
-
-if isservicesactive pushgateway; then
-    echo -e "${GREEN}OK : Pushgateway is active.${NC}"
-else
-    echo -e "${RED}KO : Pushgateway is not active.${NC}"
-    exit 1
-fi
 
 echo -e "${GREEN}Prometheus installation and configuration completed.${NC}"
 
@@ -311,25 +317,6 @@ timer 10
 sudo systemctl enable prometheus
 sudo systemctl enable pushgateway
 sudo systemctl enable alertmanager
-sudo systemctl restart prometheus
-sudo systemctl restart pushgateway
-sudo systemctl restart alertmanager
-#alertmanager 
-# curl -LO https://github.com/prometheus/alertmanager/releases/download/v$ALERTMANAGER_VERSION-rc.0/alertmanager-$ALERTMANAGER_VERSION-rc.0.linux-amd64.tar.gz
-# tar -xzf alertmanager-$ALERTMANAGER_VERSION-rc.0.linux-amd64.tar.gz
-# sudo tee /etc/systemd/system/alertmanager.service <<EOF
-# [Unit]
-# Description=Alertmanager
-# After=network.target
-
-# [Service]
-# User=ubuntu
-# ExecStart=/home/alertmanager-$ALERTMANAGER_VERSION-rc.0.linux-amd64/alertmanager --config.file=/home/alertmanager-$ALERTMANAGER_VERSION-rc.0.linux-amd64/alertmanager.yml
-# Restart=always
-
-# [Install]
-# WantedBy=multi-user.target
-# EOF
-
-# sudo systemctl start alertmanager
-# echo -e "${GREEN}Alertmanager installation and configuration completed.${NC}"
+check_and_restart_service prometheus
+check_and_restart_service pushgateway
+check_and_restart_service alertmanager
