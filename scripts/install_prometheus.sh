@@ -11,8 +11,8 @@ NC='\033[0m'
 
 PROMETHEUS_SERVICE_PATH="/etc/systemd/system/prometheus.service"
 PUSHGATEWAY_SERVICE_PATH="/etc/systemd/system/pushgateway.service"
-
 ALERTMANAGER_SERVICE_PATH="/etc/systemd/system/alertmanager.service"
+
 PROMETHEUS_YML_PATH="/etc/prometheus/prometheus.yml"
 ALERTMANAGER_YML_PATH="/opt/alertmanager/alertmanager.yml"
 ANSIBLE_SERVER_IP=""
@@ -284,9 +284,9 @@ wget https://github.com/prometheus/alertmanager/releases/download/v$ALERTMANAGER
 tar -xzf alertmanager-$ALERTMANAGER_VERSION.linux-amd64.tar.gz
 ln -s alertmanager-$ALERTMANAGER_VERSION.linux-amd64 alertmanager
 
-if [ ! -f "$PUSHGATEWAY_SERVICE_PATH" ]; then
+if [ ! -f "$ALERTMANAGER_SERVICE_PATH" ]; then
     echo -e "${YELLOW}INFO : Creating alertmanager.service unit file...${NC}"
-    sudo tee $PUSHGATEWAY_SERVICE_PATH > /dev/null <<EOF
+    sudo tee $ALERTMANAGER_SERVICE_PATH > /dev/null <<EOF
 [Unit]
 Description=Prometheus Alertmanager
 Wants=network-online.target
