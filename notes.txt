@@ -1,2 +1,2 @@
 connection server 
-ssh -i C:/Users/jeanl/.ssh/id_rsa ubuntu@3.239.200.64
+ssh -i C:/Users/jeanl/.ssh/id_rsa ubuntu@13.219.226.94

@@ -141,7 +141,7 @@ scrape_configs:
         regex: '^(\d+\.\d+)\.\d+\.\d+'
         target_label: shortname
         replacement: '\${1}'
-  - job_name: 'Pushgateway'
+  - job_name: 'pushgateway'
     honor_labels: true
     static_configs:
       - targets: ['localhost:9091']
