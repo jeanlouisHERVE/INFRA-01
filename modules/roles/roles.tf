@@ -60,16 +60,17 @@ resource "aws_iam_role_policy_attachment" "grafana_cloudwatch_attachment" {
   policy_arn = var.grafana_policy_arn
 }
 
-resource "aws_iam_role_policy_attachment" "attach_ssm_policy" {
-  role       = aws_iam_role.prometheus_role.name
-  policy_arn = var.prometheus_policy_arn
-}
 
-# Attach SSM policy to your existing grafana_role
+# Attach SSM policy to your existing roles
 resource "aws_iam_role_policy_attachment" "grafana_role_ssm" {
   role       = aws_iam_role.grafana_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
+
+resource "aws_iam_role_policy_attachment" "prometheus_role_ssm" {
+  role       = aws_iam_role.prometheus_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}s
 
 # Attach IAM Policy to the User
 resource "aws_iam_user_policy_attachment" "attach_cloudwatch_policy_to_user" {
