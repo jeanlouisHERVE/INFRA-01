@@ -41,6 +41,10 @@ module "lambdas" {
   source = "./modules/lambda/shutdown_ec2"
 }
 
+module "iam" {
+  source = "./modules/iam"
+}
+
 module "vpc" {
   source             = "./modules/vpc"
   availability_zones = ["us-east-1a", "us-east-1b"]
