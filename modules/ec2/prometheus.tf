@@ -7,7 +7,7 @@ resource "aws_instance" "prometheus" {
 
   tags = {
     Name = "EC2_prometheus"
-    Environment = "Sandbox"
+    Environment = "DEV"
   }
 
   vpc_security_group_ids = [var.security_id_prometheus, var.security_id_server]

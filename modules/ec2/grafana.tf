@@ -7,7 +7,7 @@ resource "aws_instance" "grafana" {
 
   tags = {
     Name = "EC2_grafana"
-    Environment = "Sandbox"
+    Environment = "DEV"
   }
 
   vpc_security_group_ids = [var.security_id_grafana, var.security_id_server]

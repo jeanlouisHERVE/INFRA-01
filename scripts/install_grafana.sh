@@ -69,11 +69,6 @@ sudo systemctl start grafana-server
 sudo systemctl enable grafana-server
 sudo systemctl restart grafana-server
 
-if isservicesactive grafana-server; then
-    echo -e "${GREEN}OK : Grafana is active.${NC}"
-else
-    echo -e "${RED}KO : Grafana is not active.${NC}"
-    exit 1
-fi
+isservicesactive grafana-server
 
 echo -e "${GREEN}Grafana installation and configuration completed.${NC}"
