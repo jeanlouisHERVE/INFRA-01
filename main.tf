@@ -15,9 +15,10 @@ module "security_groups" {
 }
 
 module "roles" {
-  source                = "./modules/roles"
-  grafana_policy_arn    = module.policies.policy_grafana_arn
-  prometheus_policy_arn = module.policies.policy_prometheus_arn
+  source                          = "./modules/roles"
+  grafana_policy_arn              = module.policies.policy_grafana_arn
+  prometheus_policy_arn           = module.policies.policy_prometheus_arn
+  s3_prometheus_config_policy_arn = module.s3.s3_prometheus_config_policy_arn
 }
 
 module "policies" {
