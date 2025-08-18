@@ -45,6 +45,10 @@ module "iam" {
   source = "./modules/iam"
 }
 
+module "s3" {
+  source = "./modules/s3"
+}
+
 module "vpc" {
   source             = "./modules/vpc"
   availability_zones = ["us-east-1a", "us-east-1b"]

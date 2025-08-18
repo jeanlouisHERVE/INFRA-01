@@ -67,3 +67,4 @@ override.tf.json
 terraform.rc
 
 credentials.txt
+notes.txt
