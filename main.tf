@@ -100,10 +100,6 @@ data "aws_security_groups" "all_in_vpc" {
   }
 }
 
-output "all_sg_ids" {
-  value = data.aws_security_groups.all_in_vpc.ids
-}
-
 module "prometheus_alb" {
   source  = "./modules/alb"
   name    = "prometheus-alb"

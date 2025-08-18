@@ -78,3 +78,9 @@ resource "aws_iam_user_policy_attachment" "attach_cloudwatch_policy_to_user" {
   policy_arn = var.grafana_policy_arn
 }
 
+#Attach IAM Policy S3 access for prometheus config files to prometheus server 
+
+# resource "aws_iam_policy" "ec2_access_s3_prometheus_policy" {
+#   name   = "EC2S3AccessPolicy"
+#   policy = data.aws_iam_policy_document.ec2_access_s3_prometheus.json
+# }
