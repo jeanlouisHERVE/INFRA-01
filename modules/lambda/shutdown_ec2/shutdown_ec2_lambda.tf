@@ -53,6 +53,7 @@ resource "aws_lambda_function" "shutdown_ec2_lambda" {
   handler          = "index.lambda_handler"
   runtime          = "python3.12"
   source_code_hash = data.archive_file.shutdown_ec2_lambda_zip.output_base64sha256
+  timeout          = 30
 
   environment {
     variables = {
