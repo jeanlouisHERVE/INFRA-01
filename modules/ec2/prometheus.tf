@@ -10,7 +10,7 @@ resource "aws_instance" "prometheus" {
     Environment = "DEV"
   }
 
-  vpc_security_group_ids = [var.security_id_prometheus, var.security_id_server]
+  vpc_security_group_ids = [var.security_id_prometheus, var.security_id_server, var.security_id_node-exporter]
 
   provisioner "remote-exec" {
     inline = [

@@ -26,14 +26,6 @@ resource "aws_security_group" "server" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  #prometheus node-exporter
-  ingress {
-    from_port   = 9100
-    to_port     = 9100
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
   # Allow ICMP (ping) traffic
   ingress {
     from_port   = -1
@@ -85,10 +77,31 @@ resource "aws_security_group" "grafana" {
   }
 }
 
+resource "aws_security_group" "node_exporter" {
+  name        = "node-exporter-sg"
+  description = "Allow Prometheus Node Exporter metrics"
+  vpc_id      = var.vpc_id  
+
+  ingress {
+    from_port   = 9100
+    to_port     = 9100
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] # or restrict to your Prometheus server IP for security
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
 output "security_group_ids" {
   value = {
     server              = aws_security_group.server.id,
     prometheus          = aws_security_group.prometheus.id,
     grafana             = aws_security_group.grafana.id,
+    node-exporter       = aws_security_group.node_exporter.id
   }
 }

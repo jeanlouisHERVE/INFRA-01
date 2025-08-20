@@ -33,6 +33,7 @@ module "ec2_instances" {
   security_id_server          = module.security_groups.security_group_ids["server"]
   security_id_prometheus      = module.security_groups.security_group_ids["prometheus"]
   security_id_grafana         = module.security_groups.security_group_ids["grafana"]
+  security_id_node-exporter   = module.security_groups.security_group_ids["node-exporter"]
   grafana_instance_profile    = module.roles.grafana_instance_profile
   prometheus_instance_profile = module.roles.prometheus_instance_profile
   subnet_id                   = module.vpc.public_subnet_ids[0]

@@ -11,6 +11,10 @@ variable "security_id_grafana" {
   description = "Security Group ID for Grafana instances"
 }
 
+variable "security_id_node-exporter" {
+  description = "Security Group ID to use node-exporter"
+}
+
 variable "grafana_instance_profile" {
   description = "Instance profile ARN or name for Grafana EC2"
   type        = string
