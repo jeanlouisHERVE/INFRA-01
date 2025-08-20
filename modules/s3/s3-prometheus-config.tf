@@ -1,6 +1,6 @@
 # Création du bucket S3
 resource "aws_s3_bucket" "prometheus_configs" {
-  bucket = "my-config-bucket-12345" # ⚠️ doit être globalement unique
+  bucket = "prometheus-config-bucket" 
 }
 
 # (Optionnel) Versioning pour pouvoir rollback facilement
