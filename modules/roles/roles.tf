@@ -79,7 +79,7 @@ resource "aws_iam_user_policy_attachment" "attach_cloudwatch_policy_to_user" {
 }
 
 # Attach Attach IAM Policy S3 access for prometheus config files to prometheus server 
-resource "aws_iam_role_policy_attachment" "attach_s3_to_grafana_role" {
-  role       = aws_iam_role.grafana_role.name
+resource "aws_iam_role_policy_attachment" "attach_s3_to_prometheus_role" {
+  role       = aws_iam_role.prometheus_role.name
   policy_arn = var.s3_prometheus_config_policy_arn
 }

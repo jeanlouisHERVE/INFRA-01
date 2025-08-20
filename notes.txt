@@ -1,6 +1,2 @@
 connection server 
-ssh -i C:/Users/jeanl/.ssh/id_rsa ubuntu@13.219.226.94
-
-github user 
-AKIA3SZ4EDWWLFA7PW6I
-xp+WdTYJE4y1gcMas3MsIEsWFQ9Dajsu04Lto9nR
+ssh -i C:/Users/jeanl/.ssh/id_rsa ubuntu@3.239.53.44
