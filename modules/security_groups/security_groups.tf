@@ -79,14 +79,15 @@ resource "aws_security_group" "grafana" {
 
 resource "aws_security_group" "node_exporter" {
   name        = "node-exporter-sg"
-  description = "Allow Prometheus Node Exporter metrics"
-  vpc_id      = var.vpc_id  
+  description = "Allow Prometheus to scrape node_exporter"
+  vpc_id      = var.vpc_id
 
   ingress {
-    from_port   = 9100
-    to_port     = 9100
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # or restrict to your Prometheus server IP for security
+    description     = "Prometheus EC2 can scrape metrics"
+    from_port       = 9100
+    to_port         = 9100
+    protocol        = "tcp"
+    security_groups = [aws_security_group.prometheus.id]
   }
 
   egress {
