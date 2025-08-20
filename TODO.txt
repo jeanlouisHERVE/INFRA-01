@@ -1,1 +1,3 @@
-prometheus alb > issue with security groups
+deploy node-exporter 
+install ansible on a node 
+create playbook to configure prometheus and grafana nodes
