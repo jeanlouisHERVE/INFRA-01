@@ -21,7 +21,8 @@ resource "aws_iam_user_policy" "github_deployer_policy" {
           "ssm:SendCommand",
           "ssm:ListCommands",
           "ssm:ListCommandInvocations",
-          "ec2:DescribeInstances"
+          "ec2:DescribeInstances",
+          "s3:PutObject"
         ],
         Resource = "*"
       }
