@@ -67,27 +67,27 @@ resource "aws_lambda_function" "shutdown_ec2_lambda" {
   }
 }
 
-#################################21PMUTC#################################
+#################################20PMUTC#################################
 # CloudWatch rule for nightly execution
-resource "aws_cloudwatch_event_rule" "shutdown_ec2_21UTC" {
+resource "aws_cloudwatch_event_rule" "shutdown_ec2_20UTC" {
   name                = "shutdown_ec2_evening"
   schedule_expression = "cron(0 20 * * ? *)" # Every night at 8 PM UTC
 }
 
 # Attach Lambda to CloudWatch rule
-resource "aws_cloudwatch_event_target" "shutdown_ec2_lambda_21UTC_target" {
-  rule      = aws_cloudwatch_event_rule.shutdown_ec2_21UTC.name
+resource "aws_cloudwatch_event_target" "shutdown_ec2_lambda_20UTC_target" {
+  rule      = aws_cloudwatch_event_rule.shutdown_ec2_20UTC.name
   target_id = "ShutdownEC2Lambda"
   arn       = aws_lambda_function.shutdown_ec2_lambda.arn
 }
 
 # Grant CloudWatch Events permission to invoke Lambda
-resource "aws_lambda_permission" "allow_cloudwatch_21UTC" {
-  statement_id  = "AllowExecutionFromCloudWatch21UTC"
+resource "aws_lambda_permission" "allow_cloudwatch_20UTC" {
+  statement_id  = "AllowExecutionFromCloudWatch20UTC"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.shutdown_ec2_lambda.function_name
   principal     = "events.amazonaws.com"
-  source_arn    = aws_cloudwatch_event_rule.shutdown_ec2_21UTC.arn
+  source_arn    = aws_cloudwatch_event_rule.shutdown_ec2_20UTC.arn
 }
 
 #################################06AMUTC#################################
