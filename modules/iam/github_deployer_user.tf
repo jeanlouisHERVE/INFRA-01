@@ -30,3 +30,23 @@ resource "aws_iam_user_policy" "github_deployer_policy" {
   })
 }
 
+# Secret for the access key ID
+resource "aws_secretsmanager_secret" "github_access_key_id" {
+  name = "SECOUREO/USER/GITHUB_DEPLOYER/KEY_ID"
+}
+
+resource "aws_secretsmanager_secret_version" "github_access_key_id" {
+  secret_id     = aws_secretsmanager_secret.github_access_key_id.id
+  secret_string = aws_iam_access_key.github_deployer_key.id
+}
+
+# Secret for the secret access key
+resource "aws_secretsmanager_secret" "github_secret_access_key" {
+  name = "SECOUREO/USER/GITHUB_DEPLOYER/ACCESS_KEY"
+}
+
+resource "aws_secretsmanager_secret_version" "github_secret_access_key" {
+  secret_id     = aws_secretsmanager_secret.github_secret_access_key.id
+  secret_string = aws_iam_access_key.github_deployer_key.secret
+}
+
