@@ -1,13 +1,14 @@
 # Création du bucket S3
 resource "aws_s3_bucket" "prometheus_configs" {
-  bucket = "prometheus-config-secoureo-bucket" 
+  bucket        = "prometheus-config-secoureo-bucket" 
+  force_destroy = true
 }
 
 # (Optionnel) Versioning pour pouvoir rollback facilement
 resource "aws_s3_bucket_versioning" "this" {
   bucket = aws_s3_bucket.prometheus_configs.id
   versioning_configuration {
-    status = "Enabled"
+    status = "Suspended"
   }
 }
 
